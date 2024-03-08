@@ -6,77 +6,73 @@ import java.util.*;
 public class OthelloAI3 implements IOthelloAI{
 
 	GameState S1;
-	Tuple r = new Tuple(new Position(3,2), 4);
-	//Object[] tuple1 = new Object[2]{Position, int};
-	//List<> tuple = new ArrayList<Position, Float>(); // first a Position and then the utility
-	
-	/**
-	 * Returns first legal move
-	 */
 
 	// Equivalent to the MINIMAX-SEARCH(State) function
 	public Position decideMove(GameState s){
-
-		//old code Pls delete later!
-		ArrayList<Position> moves = s.legalMoves();
-		if ( !moves.isEmpty() )
-			return moves.get(0);
-		else
-			return new Position(-1,-1);
-			
+		Tuple t = maxValue(s);
+		return t.getPos();
 	}
 
 	public Tuple maxValue(GameState gs) {
 		if (gs.isFinished()) {
-			return new Tuple(null, findUtility(gs));
+			return new Tuple(new Position(-1, -1), findUtility(gs));
 		}
+		float value = Float.MIN_VALUE;
+		Position maxMove = new Position(-1, -1);
 
-		return new Tuple(null, 0.0f);
+		ArrayList<Position> moves = gs.legalMoves();
+		int[][] board = gs.getBoard();
+		int player = gs.getPlayerInTurn();
+		Tuple tempTuple;
+		for (Position move : moves) {
+			GameState tempGameState = new GameState(board, player);
+			if (tempGameState.insertToken(move)) {
+				tempTuple = minValue(tempGameState);
+				if(tempTuple.getNum() > value){
+					value=tempTuple.getNum();
+					maxMove = move;
+				}
+			}else{
+				//hopefully shouldn't run :'(
+				System.err.println("Bro du må ikke sætte en brik her my man?!?!?!?!?!(max)");
+			}
+		}
+		return new Tuple(maxMove, value);
 	}
 
 	public Tuple minValue(GameState gs) {
 		if (gs.isFinished()) {
-			return new Tuple(null, findUtility(gs));
+			return new Tuple(new Position(-1, -1), findUtility(gs));
 		}
-		return new Tuple(null, 0.0f);
+		float value = Float.MAX_VALUE;
+		Position minMove = new Position(-1, -1);
+
+
+		ArrayList<Position> moves = gs.legalMoves();
+		int[][] board = gs.getBoard();
+		int player = gs.getPlayerInTurn();
+		Tuple tempTuple;
+		for (Position move : moves) {
+			GameState tempGameState = new GameState(board, player);
+			if (tempGameState.insertToken(move)) {
+				tempTuple = maxValue(tempGameState);
+				if(tempTuple.getNum() < value){
+					value=tempTuple.getNum();
+					minMove = move;
+				}
+			}else{
+				//hopefully shouldn't run :'(
+				System.err.println("Bro du må ikke sætte en brik her my man?!?!?!?!?!(min)");
+			}
+		}
+		return new Tuple(minMove, value);
 	}
 
 	public float findUtility(GameState gs){
-		int value = gs.countTokens()[0];
+		int value = gs.countTokens()[gs.getPlayerInTurn()-1];
+
 		return value;
 	}
 
 
 }
-
-/**
-Minimax Pseudocode
-
-translation notes
-action -> position
-utility,move -> utility,position
-
-function MINIMAX-SEARCH(state) returns an action
-	value, move ← MAX-VALUE(state)
-return move
-
-function MAX-VALUE(state) returns (utility,move)
-	if IS-TERMINAL(state) then
-		return UTILITY(state,MAX), null
-	v ← -∞
-	for each a in ACTIONS(state) do
-		v2,a2 ← MIN-VALUE(RESULT(state,a))
-		if v2 > v then
-			v,move ← v2,a
-	return v,move
-
-function MIN-VALUE(state) returns (utility,move)
-	if IS-TERMINAL(state) then
-		return UTILITY(state,MAX), null
-	v ← +∞
-	for each a in ACTIONS(state) do
-		v2,a2 ← MAX-VALUE(RESULT(state,a))
-		if v2 < v then
-			v,move ← v2,a
-	return v,move
- **/
