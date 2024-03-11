@@ -5,6 +5,9 @@
 # Compiled class file
 *.class
 
+# Production
+production
+
 # Log file
 *.log
 
