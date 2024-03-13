@@ -56,32 +56,13 @@ public class HalvDumAI implements IOthelloAI {
         }
     }
 
-    /*private void calcUtil(Node n) {
+    private void calcUtil() {
         // TODO: Do we need a step func?
-
-        n.getTokenCount();
+        //  No, not a step func, but a recursive calculator:
+        //  Node's util: (child:children getTokenCount)/children
+        //  Might need to refactor from Map bc no. of copy-delete to get correct util.
+        node.getTokenCount();
     }
-
-    // TODO: Play with Node n as another param for InsertN
-    private void insertNodes1(Node n, GameState s) {
-        if (s.isFinished()) {
-            calcUtil(n);
-            return;
-        }
-
-        for (Position move : s.legalMoves()) {
-            GameState auxState = new GameState(s.getBoard(), s.getPlayerInTurn());
-
-            if (auxState.insertToken(move)) {
-                node.add(
-                        getUtility (
-                                auxState),
-                                new Node(node.getDepth()+1));
-
-                insertNodes1(n, auxState);
-            }
-        }
-    }*/
 
     /*function MAX-VALUE(state) returns (utility, move)
         if IS-TERMINAL(state) then
