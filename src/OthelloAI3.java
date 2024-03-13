@@ -6,15 +6,22 @@ import java.util.*;
 public class OthelloAI3 implements IOthelloAI{
 
 	GameState S1;
+	private static final int max_depth = 6;
 
 	// Equivalent to the MINIMAX-SEARCH(State) function
 	public Position decideMove(GameState s){
-		Tuple t = maxValue(s);
+		long start = System.currentTimeMillis();
+		Tuple t = maxValue(s, 0);
+		long end = System.currentTimeMillis();
+		System.out.println("Time taken by decideMove: " + (end - start) + " ms");
 		return t.getPos();
 	}
 
-	public Tuple maxValue(GameState gs) {
-		if (gs.isFinished()) {
+	public Tuple maxValue(GameState gs, int depth) {
+		long start = System.currentTimeMillis();
+		if (depth >= max_depth || gs.isFinished()) {
+			long end = System.currentTimeMillis();
+			System.out.println("Time taken by maxValue: " + (end - start) + " ms, on layer: " + depth);
 			return new Tuple(new Position(-1, -1), findUtility(gs));
 		}
 		float value = Float.MIN_VALUE;
@@ -27,7 +34,7 @@ public class OthelloAI3 implements IOthelloAI{
 		for (Position move : moves) {
 			GameState tempGameState = new GameState(board, player);
 			if (tempGameState.insertToken(move)) {
-				tempTuple = minValue(tempGameState);
+				tempTuple = minValue(tempGameState, depth+1);
 				if(tempTuple.getNum() > value){
 					value=tempTuple.getNum();
 					maxMove = move;
@@ -37,11 +44,16 @@ public class OthelloAI3 implements IOthelloAI{
 				System.err.println("Bro du må ikke sætte en brik her my man?!?!?!?!?!(max)");
 			}
 		}
+		long end = System.currentTimeMillis();
+		System.out.println("Time taken by maxValue: " + (end - start) + " ms, on layer: " + depth);
 		return new Tuple(maxMove, value);
 	}
 
-	public Tuple minValue(GameState gs) {
-		if (gs.isFinished()) {
+	public Tuple minValue(GameState gs, int depth) {
+		long start = System.currentTimeMillis();
+		if (depth >= max_depth || gs.isFinished()) {
+			long end = System.currentTimeMillis();
+			System.out.println("Time taken by minValue: " + (end - start) + " ms, on layer: " + depth);
 			return new Tuple(new Position(-1, -1), findUtility(gs));
 		}
 		float value = Float.MAX_VALUE;
@@ -55,7 +67,7 @@ public class OthelloAI3 implements IOthelloAI{
 		for (Position move : moves) {
 			GameState tempGameState = new GameState(board, player);
 			if (tempGameState.insertToken(move)) {
-				tempTuple = maxValue(tempGameState);
+				tempTuple = maxValue(tempGameState, depth+1);
 				if(tempTuple.getNum() < value){
 					value=tempTuple.getNum();
 					minMove = move;
@@ -65,6 +77,8 @@ public class OthelloAI3 implements IOthelloAI{
 				System.err.println("Bro du må ikke sætte en brik her my man?!?!?!?!?!(min)");
 			}
 		}
+		long end = System.currentTimeMillis();
+		System.out.println("Time taken by minValue: " + (end - start) + " ms, on layer: " + depth);
 		return new Tuple(minMove, value);
 	}
 
