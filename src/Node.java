@@ -15,6 +15,9 @@ public class Node {
 
     private final int depth;
 
+    // TODO: Create func to check if a new gamestate has a higher util
+    private float maxUtil;
+
     Node(int depth) {
         this.depth = depth;
     }

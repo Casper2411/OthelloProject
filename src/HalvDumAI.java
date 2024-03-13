@@ -16,16 +16,14 @@ public class HalvDumAI implements IOthelloAI {
     return move
     */
     public Position decideMove(GameState s) {
-        /*
         Tuple t;
-
-        if (node.isEmpty()) { t = maxValue(s); }
-            return t.getPos();
-        */
 
         if (node.isEmpty()) {
             generateGameTrie(s);
         }
+
+        t = maxValue(s);
+        return t.getPos();
     }
 
     private void generateGameTrie(GameState s) {
@@ -38,6 +36,8 @@ public class HalvDumAI implements IOthelloAI {
         insertNodes(s);
     }
 
+    // TODO: Ensure initial keys are 0..n floats bc maps and dupes
+    // TODO: Check how getUtil works to see if and how you need to calc util for Nodes.
     private void insertNodes(GameState s) {
         if (s.isFinished()) { return; }
 
@@ -45,11 +45,11 @@ public class HalvDumAI implements IOthelloAI {
             GameState auxState = new GameState(s.getBoard(), s.getPlayerInTurn());
 
             if (auxState.insertToken(move)) {
-
                 node.add(
                         getUtility(
                                 auxState),
                                 new Node(node.getDepth()+1));
+
                 insertNodes(auxState);
             }
         }
@@ -66,7 +66,8 @@ public class HalvDumAI implements IOthelloAI {
         return v, move
      */
 
-    // ACTUAL IMPL
+    // TODO: How to traverse nodes? Step-func?
+    // TODO: Pass node's gameStates !!
     // function MAX-VALUE(state) returns (utility, move)
     /*public Tuple maxValue(GameState s) {
 
