@@ -45,9 +45,11 @@ public class HalvDumAI implements IOthelloAI {
             GameState auxState = new GameState(s.getBoard(), s.getPlayerInTurn());
 
             if (auxState.insertToken(move)) {
-                node.add(getUtility(
-                        auxState),
-                        new Node(node.getDepth()+1));
+
+                node.add(
+                        getUtility(
+                                auxState),
+                                new Node(node.getDepth()+1));
                 insertNodes(auxState);
             }
         }
