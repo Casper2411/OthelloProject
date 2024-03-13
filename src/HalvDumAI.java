@@ -4,27 +4,53 @@ public class HalvDumAI implements IOthelloAI {
 
     // Minimax Algorithm
 
+    //GameState S1;
+    Node node = new Node();
+    Position none = new Position(-1, -1);
+
+    private float getUtility(GameState s) {
+        return s.countTokens()[s.getPlayerInTurn()-1];
+    }
+
     /*
     function MINIMAX-SEARCH(state) returns an action
         value, move <- MAX-VALUE(state)
     return move
     */
-
-    GameState S1;
-    Position none = new Position(-1, -1);
-
-    private int getUtility(GameState s) {
-        return s.countTokens()[s.getPlayerInTurn()-1];
-    }
-
-    private Tuple mValResult {
-
-    }
-
-    // Equivalent to the MINIMAX-SEARCH(State) function
     public Position decideMove(GameState s) {
-        Tuple t = maxValue(s);
-        return t.getPos();
+        /*
+        Tuple t;
+
+        if (node.isEmpty()) { t = maxValue(s); }
+            return t.getPos();
+        */
+
+        if (node.isEmpty()) {
+            generateGameTrie(s);
+        }
+    }
+
+    private void generateGameTrie(GameState s) {
+        node.setGameState(
+                new GameState(
+                        s.getBoard(),
+                        s.getPlayerInTurn())
+        );
+
+        insertNodes(s);
+    }
+
+    private void insertNodes(GameState s) {
+        if (s.isFinished()) { return; }
+
+        for (Position move : s.legalMoves()) {
+            GameState auxState = new GameState(s.getBoard(), s.getPlayerInTurn());
+
+            if (auxState.insertToken(move)) {
+                node.add(getUtility(auxState), new Node());
+                insertNodes(auxState);
+            }
+        }
     }
 
     /*function MAX-VALUE(state) returns (utility, move)
@@ -38,8 +64,9 @@ public class HalvDumAI implements IOthelloAI {
         return v, move
      */
 
+    // ACTUAL IMPL
     // function MAX-VALUE(state) returns (utility, move)
-    public Tuple maxValue(GameState s) {
+    /*public Tuple maxValue(GameState s) {
 
         // if IS-TERMINAL(state) then return UTILITY(state, MAX), null
         if (s.isFinished()) return new Tuple(none, getUtility(s));
@@ -50,8 +77,8 @@ public class HalvDumAI implements IOthelloAI {
         // for each a in ACTIONS(state) do
         for (Position move : s.legalMoves()) {
             // v2, a2 <- MIN-VALUE(RESULT(state, a))
-            Tuple minV = minValue(decideMove(move))
+            Tuple minV = minValue(decideMove())
         }
-    }
+    }*/
 
 }
