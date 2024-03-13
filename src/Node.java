@@ -34,7 +34,7 @@ public class Node {
 
     public int getDepth() { return depth; }
 
-    public int getUtility() {
+    public int getTokenCount() {
         return gameState.countTokens()[gameState.getPlayerInTurn()-1];
     }
 

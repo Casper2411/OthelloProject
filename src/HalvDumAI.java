@@ -2,10 +2,13 @@ import java.util.*;
 
 public class HalvDumAI implements IOthelloAI {
 
+    //TODO: Win.
+
     // Minimax Algorithm
     Node node = new Node(0);
     Position none = new Position(-1, -1);
 
+    // FIXME: this is not the droid- i mean, util that we're looking for, change it.
     private float getUtility(GameState s) {
         return s.countTokens()[s.getPlayerInTurn()-1];
     }
@@ -36,8 +39,6 @@ public class HalvDumAI implements IOthelloAI {
         insertNodes(s);
     }
 
-    // TODO: Ensure initial keys are 0..n floats bc maps and dupes
-    // TODO: Check how getUtil works to see if and how you need to calc util for Nodes.
     private void insertNodes(GameState s) {
         if (s.isFinished()) { return; }
 
@@ -46,7 +47,7 @@ public class HalvDumAI implements IOthelloAI {
 
             if (auxState.insertToken(move)) {
                 node.add(
-                        getUtility(
+                        getUtility (
                                 auxState),
                                 new Node(node.getDepth()+1));
 
@@ -54,6 +55,33 @@ public class HalvDumAI implements IOthelloAI {
             }
         }
     }
+
+    /*private void calcUtil(Node n) {
+        // TODO: Do we need a step func?
+
+        n.getTokenCount();
+    }
+
+    // TODO: Play with Node n as another param for InsertN
+    private void insertNodes1(Node n, GameState s) {
+        if (s.isFinished()) {
+            calcUtil(n);
+            return;
+        }
+
+        for (Position move : s.legalMoves()) {
+            GameState auxState = new GameState(s.getBoard(), s.getPlayerInTurn());
+
+            if (auxState.insertToken(move)) {
+                node.add(
+                        getUtility (
+                                auxState),
+                                new Node(node.getDepth()+1));
+
+                insertNodes1(n, auxState);
+            }
+        }
+    }*/
 
     /*function MAX-VALUE(state) returns (utility, move)
         if IS-TERMINAL(state) then
