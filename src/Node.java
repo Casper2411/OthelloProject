@@ -13,7 +13,7 @@ public class Node {
 
     private GameState gameState;
 
-    private int depth;
+    private final int depth;
 
     Node(int depth) {
         this.depth = depth;

@@ -32,7 +32,7 @@ public class OthelloAI3 implements IOthelloAI{
 					value=tempTuple.getNum();
 					maxMove = move;
 				}
-			}else{
+			} else {
 				//hopefully shouldn't run :'(
 				System.err.println("Bro du må ikke sætte en brik her my man?!?!?!?!?!(max)");
 			}
