@@ -20,9 +20,11 @@ public class Node {
         return nextNodes.isEmpty();
     }
 
-    public GameState getGameState() {
-        return gameState;
+    public void setGameState(GameState s) {
+        gameState = s;
     }
+
+    public GameState getGameState() { return gameState;}
 
     public int getUtility() {
         return gameState.countTokens()[gameState.getPlayerInTurn()-1];
