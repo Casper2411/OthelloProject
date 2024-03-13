@@ -13,7 +13,10 @@ public class Node {
 
     private GameState gameState;
 
-    Node() {
+    private int depth;
+
+    Node(int depth) {
+        this.depth = depth;
     }
 
     public boolean isEmpty() {
@@ -25,6 +28,8 @@ public class Node {
     }
 
     public GameState getGameState() { return gameState;}
+
+    public int getDepth() { return depth; }
 
     public int getUtility() {
         return gameState.countTokens()[gameState.getPlayerInTurn()-1];

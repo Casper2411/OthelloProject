@@ -3,9 +3,7 @@ import java.util.*;
 public class HalvDumAI implements IOthelloAI {
 
     // Minimax Algorithm
-
-    //GameState S1;
-    Node node = new Node();
+    Node node = new Node(0);
     Position none = new Position(-1, -1);
 
     private float getUtility(GameState s) {
@@ -47,7 +45,9 @@ public class HalvDumAI implements IOthelloAI {
             GameState auxState = new GameState(s.getBoard(), s.getPlayerInTurn());
 
             if (auxState.insertToken(move)) {
-                node.add(getUtility(auxState), new Node());
+                node.add(getUtility(
+                        auxState),
+                        new Node(node.getDepth()+1));
                 insertNodes(auxState);
             }
         }
