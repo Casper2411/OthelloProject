@@ -6,7 +6,7 @@ import java.util.*;
 public class OthelloAI3 implements IOthelloAI{
 
 	GameState S1;
-	private static final int max_depth = 4;
+	private static final int max_depth = 3;
 
 	// Equivalent to the MINIMAX-SEARCH(State) function
 	public Position decideMove(GameState s){
@@ -15,9 +15,18 @@ public class OthelloAI3 implements IOthelloAI{
 			s.changePlayer();
 			return null;
 		}
-		Tuple t = maxValue(s, 0);
+
+		//Make a temp state, so it wont affect the board
+		int[][] board = s.getBoard();
+		int player = s.getPlayerInTurn();
+		GameState tempGameState = new GameState(board, player);
+
+		Tuple t = maxValue(tempGameState, 0);
 		long end = System.currentTimeMillis();
 		System.out.println("Time taken by decideMove: " + (end - start) + " ms");
+		System.out.println(t.getNum());
+		System.out.println(t.getPos().col + " " + t.getPos().row);
+		System.out.println(findUtility(tempGameState));
 		return t.getPos();
 	}
 
@@ -28,12 +37,19 @@ public class OthelloAI3 implements IOthelloAI{
 			System.out.println("Time taken by maxValue: " + (end - start) + " ms, on layer: " + depth);
 			return new Tuple(new Position(-1, -1), findUtility(gs));
 		}
-		float value = Float.MIN_VALUE;
+		float value = - Float.MAX_VALUE;
 		Position maxMove = new Position(-2, -2);
 
 		ArrayList<Position> moves = gs.legalMoves();
 		int[][] board = gs.getBoard();
 		int player = gs.getPlayerInTurn();
+		System.out.println("maxValue has number: " + player);
+
+		//Check if no legal moves to do.
+		if(moves.isEmpty()){
+			return new Tuple(new Position(-4, -4), player);
+		}
+
 		Tuple tempTuple;
 		for (Position move : moves) {
 			GameState tempGameState = new GameState(board, player);
@@ -70,6 +86,13 @@ public class OthelloAI3 implements IOthelloAI{
 		ArrayList<Position> moves = gs.legalMoves();
 		int[][] board = gs.getBoard();
 		int player = gs.getPlayerInTurn();
+		System.out.println("minValue has number: " + player);
+
+		//Check if no legal moves to do.
+		if(moves.isEmpty()){
+			return new Tuple(new Position(-4, -4), player);
+		}
+
 		Tuple tempTuple;
 		for (Position move : moves) {
 			GameState tempGameState = new GameState(board, player);
@@ -90,8 +113,10 @@ public class OthelloAI3 implements IOthelloAI{
 	}
 
 	public float findUtility(GameState gs){
-		int value = gs.countTokens()[gs.getPlayerInTurn()-1];
+		var gsValue = gs.countTokens();
+		int value=gsValue[1]-gsValue[0];
 
+		System.out.println("utility: " + value);
 		return value;
 	}
 
