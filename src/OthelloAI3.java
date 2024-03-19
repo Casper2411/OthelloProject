@@ -6,7 +6,9 @@ import java.util.*;
 public class OthelloAI3 implements IOthelloAI{
 
 	GameState S1;
-	private static final int max_depth = 3;
+	private int AIplayer;
+	private static final int max_depth = 6;
+	private static final float bonusOfEdgePlacement = (float) 0.25;
 
 	// Equivalent to the MINIMAX-SEARCH(State) function
 	public Position decideMove(GameState s){
@@ -19,6 +21,7 @@ public class OthelloAI3 implements IOthelloAI{
 		//Make a temp state, so it wont affect the board
 		int[][] board = s.getBoard();
 		int player = s.getPlayerInTurn();
+		AIplayer=player;
 		GameState tempGameState = new GameState(board, player);
 
 		Tuple t = maxValue(tempGameState, 0);
@@ -47,7 +50,9 @@ public class OthelloAI3 implements IOthelloAI{
 
 		//Check if no legal moves to do.
 		if(moves.isEmpty()){
-			return new Tuple(new Position(-4, -4), player);
+			GameState tempGameState = new GameState(board, player);
+			return new Tuple(null, minValue(tempGameState, depth+1).getNum());
+			//return new Tuple(new Position(-4, -4), findUtility(gs));//returns the utitility, but with a disadvantage, because it is our turn, and we want to be able to do something.
 		}
 
 		Tuple tempTuple;
@@ -90,7 +95,10 @@ public class OthelloAI3 implements IOthelloAI{
 
 		//Check if no legal moves to do.
 		if(moves.isEmpty()){
-			return new Tuple(new Position(-4, -4), player);
+			GameState tempGameState = new GameState(board, player);
+			return new Tuple(null, maxValue(tempGameState, depth+1).getNum());
+			//return new Tuple(new Position(-4, -4), findUtility(gs)); 
+			//returns the utitility, but with a slight advantage, because it is our opponents turn, and we want out opponent to be stuck.
 		}
 
 		Tuple tempTuple;
@@ -112,12 +120,42 @@ public class OthelloAI3 implements IOthelloAI{
 		return new Tuple(minMove, value);
 	}
 
+	/*
+	 * Denne funktion finder vores custom Utility 
+	 * af en gamestate, og  returnerer den.
+	 */
 	public float findUtility(GameState gs){
-		var gsValue = gs.countTokens();
-		int value=gsValue[1]-gsValue[0];
+		var gsValue = gs.countTokens();//returnerer et array hvor [0] er antallet af sorte brikker og [1] er antallet af hvide brikker
 
-		System.out.println("utility: " + value);
-		return value;
+		//AIplayer-1 er vores AI's score, og AIplayer%2 er modstanderen
+		int value=gsValue[AIplayer-1] - gsValue[AIplayer%2];
+
+
+		int[][] board = gs.getBoard();
+
+		/*
+		 * Her tilføjer vi en heuristic der prioriterer 
+		 * brikker der ligger i siderne af brættet og 
+		 * specielt hjørnebrikker også
+		 */
+		for (int i = 0; i < board[0].length; i++) {
+			if (board[0][i] == AIplayer){
+				value += bonusOfEdgePlacement;
+			}
+			if (board[board.length-1][i] == AIplayer){
+				value += bonusOfEdgePlacement;
+			}
+		}
+		for (int j = 0; j < board.length; j++) {
+			if (board[j][0] == AIplayer){
+				value += bonusOfEdgePlacement;
+			}
+			if (board[j][board[j].length-1] == AIplayer){
+				value += bonusOfEdgePlacement;
+			}
+		}
+
+		return value; //Returner den udregnede value.
 	}
 
 
