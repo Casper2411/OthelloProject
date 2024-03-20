@@ -24,7 +24,7 @@ public class OthelloAI3 implements IOthelloAI{
 		int[][] board = gs.getBoard();
 		int player = gs.getPlayerInTurn();
 		Tuple tempTuple;
-		for (Position move : moves) {
+		for (Position move : moves) { // TODO: Only do it with the move with highest utility bc alpha-pruning
 			GameState tempGameState = new GameState(board, player);
 			if (tempGameState.insertToken(move)) {
 				tempTuple = minValue(tempGameState);
@@ -52,7 +52,7 @@ public class OthelloAI3 implements IOthelloAI{
 		int[][] board = gs.getBoard();
 		int player = gs.getPlayerInTurn();
 		Tuple tempTuple;
-		for (Position move : moves) {
+		for (Position move : moves) { // TODO: only do it with the move with the lowest??? utility bc beta pruning - depends on Casper's new utility impl.
 			GameState tempGameState = new GameState(board, player);
 			if (tempGameState.insertToken(move)) {
 				tempTuple = maxValue(tempGameState);
