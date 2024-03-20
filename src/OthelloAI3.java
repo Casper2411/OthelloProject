@@ -10,8 +10,8 @@ public class OthelloAI3 implements IOthelloAI{
 	private static final int max_depth = 6;
 	private static final float bonusOfEdgePlacement = (float) 0.25;
 
-	private static float alphaVal = - (Float.MAX_VALUE);
-	private static float betaVal = - Float.MAX_VALUE;
+	private float alphaVal = - (Float.MAX_VALUE);
+	private float betaVal = - Float.MAX_VALUE;
 
 
 	// Equivalent to the MINIMAX-SEARCH(State) function
@@ -72,10 +72,10 @@ public class OthelloAI3 implements IOthelloAI{
 				//This if-statement is run if the utility we got from the minValue call is higher than the current value
 				if(tempTuple.getNum() > value){
 					value=tempTuple.getNum();
+				}
 
-					if (value > alphaVal) {
-						alphaVal = value;
-					}
+				if (value > alpha) {
+					alpha = value;
 				}
 
 				if (value >= beta) {
@@ -128,15 +128,17 @@ public class OthelloAI3 implements IOthelloAI{
 				if(tempTuple.getNum() < value){
 					value=tempTuple.getNum();
 
-					if (value < betaVal) {
-						betaVal = value;
-					}
+				}
+
+				if (value < beta) {
+					beta = value;
 				}
 
 				if (value <= alpha) {
 					minMove = move;
 					return new Tuple(minMove, value);
 				}
+
 			} else {
 				//hopefully shouldn't run :'(
 				System.err.println("This is not allowed!");
