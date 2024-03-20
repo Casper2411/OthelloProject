@@ -23,7 +23,7 @@ public class OthelloAI3 implements IOthelloAI{
 			return null;
 		}
 
-		//Make a temp state, so it wont affect the real board
+		//Make a temp state, so it won't affect the real board
 		int[][] board = s.getBoard();
 		int player = s.getPlayerInTurn();
 		AIplayer=player;
@@ -35,7 +35,7 @@ public class OthelloAI3 implements IOthelloAI{
 		long end = System.currentTimeMillis(); //end timing
 		System.out.println("Time taken by decideMove: " + (end - start) + " ms");
 
-		return t.getPos(); //Return the move with the hight utility
+		return t.getPos(); //Return the move with the highest utility
 	}
 
 	public Tuple maxValue(GameState gs, int depth, float alpha, float beta) {
@@ -55,7 +55,7 @@ public class OthelloAI3 implements IOthelloAI{
 
 		ArrayList<Position> moves = gs.legalMoves(); //get all legal moves for the current gamestate
 
-		//here we get the data from the gamestate, so we can make mulitple copies of it.
+		//here we get the data from the gamestate, so we can make multiple copies of it.
 		int[][] board = gs.getBoard();
 		int player = gs.getPlayerInTurn();
 
@@ -109,7 +109,7 @@ public class OthelloAI3 implements IOthelloAI{
 
 		ArrayList<Position> moves = gs.legalMoves(); //get all legal moves for the current gamestate
 
-		//here we get the data from the gamestate, so we can make mulitple copies of it.
+		//here we get the data from the gamestate, so we can make multiple copies of it.
 		int[][] board = gs.getBoard();
 		int player = gs.getPlayerInTurn();
 
