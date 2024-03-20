@@ -10,6 +10,10 @@ public class OthelloAI3 implements IOthelloAI{
 	private static final int max_depth = 6;
 	private static final float bonusOfEdgePlacement = (float) 0.25;
 
+	private static float alphaVal = - (Float.MAX_VALUE);
+	private static float betaVal = - Float.MAX_VALUE;
+
+
 	// Equivalent to the MINIMAX-SEARCH(State) function
 	public Position decideMove(GameState s){
 		System.out.println("AI is thinking!");
@@ -26,7 +30,7 @@ public class OthelloAI3 implements IOthelloAI{
 		GameState tempGameState = new GameState(board, player);
 
 		//Make the initial call to maxValue
-		Tuple t = maxValue(tempGameState, 0);
+		Tuple t = maxValue(tempGameState, 0, alphaVal, betaVal);
 
 		long end = System.currentTimeMillis(); //end timing
 		System.out.println("Time taken by decideMove: " + (end - start) + " ms");
@@ -34,7 +38,7 @@ public class OthelloAI3 implements IOthelloAI{
 		return t.getPos(); //Return the move with the hight utility
 	}
 
-	public Tuple maxValue(GameState gs, int depth) {
+	public Tuple maxValue(GameState gs, int depth, float alpha, float beta) {
 
 		//Check if the board has reached a dead end, or if this node is at max depth
 		if (depth >= max_depth || gs.isFinished()) {
@@ -52,8 +56,8 @@ public class OthelloAI3 implements IOthelloAI{
 		//Check if no legal moves to do.
 		if(moves.isEmpty()){
 			GameState tempGameState = new GameState(board, player); //make a copy of the gamestate
-
-			return new Tuple(null, minValue(tempGameState, depth+1).getNum()); //return a placeholder move, and make a new call to minValue
+			// TODO: Why run minValue when it's not our turn anyways? Isn't it a bit of a resource waste?
+			return new Tuple(null, minValue(tempGameState, depth+1, alpha, beta).getNum()); //return a placeholder move, and make a new call to minValue
 		}
 
 		Tuple tempTuple; //This is the tempTuple that will be used in the for loop
@@ -63,12 +67,20 @@ public class OthelloAI3 implements IOthelloAI{
 			//The if statement here checks if the token can be inserted(Which it should be, since we have the move from gs.legalMoves)
 			if (tempGameState.insertToken(move)) { //Here the token is inserted
 
-				tempTuple = minValue(tempGameState, depth+1);//and here it is passed to the minValue function.
+				tempTuple = minValue(tempGameState, depth+1, alpha, beta);//and here it is passed to the minValue function.
 
 				//This if-statement is run if the utility we got from the minValue call is higher than the current value
 				if(tempTuple.getNum() > value){
 					value=tempTuple.getNum();
+
+					if (value > alphaVal) {
+						alphaVal = value;
+					}
+				}
+
+				if (value >= beta) {
 					maxMove = move;
+					return new Tuple(maxMove, value);
 				}
 			} else {
 				//hopefully shouldn't run :'(
@@ -80,7 +92,7 @@ public class OthelloAI3 implements IOthelloAI{
 		return new Tuple(maxMove, value);
 	}
 
-	public Tuple minValue(GameState gs, int depth) {
+	public Tuple minValue(GameState gs, int depth, float alpha, float beta) {
 
 		//Check if the board has reached a dead end, or if this node is at max depth
 		if (depth >= max_depth || gs.isFinished()) {
@@ -100,7 +112,7 @@ public class OthelloAI3 implements IOthelloAI{
 		if(moves.isEmpty()){
 			GameState tempGameState = new GameState(board, player);//make a copy of the gamestate
 
-			return new Tuple(null, maxValue(tempGameState, depth+1).getNum()); //return a placeholder move, and make a new call to maxValue
+			return new Tuple(null, maxValue(tempGameState, depth+1, alpha, beta).getNum()); //return a placeholder move, and make a new call to maxValue
 		}
 
 		Tuple tempTuple;//This is the tempTuple that will be used in the for loop
@@ -110,14 +122,22 @@ public class OthelloAI3 implements IOthelloAI{
 			//The if statement here checks if the token can be inserted(Which it should be, since we have the move from gs.legalMoves)
 			if (tempGameState.insertToken(move)) { //Here the token is inserted
 
-				tempTuple = maxValue(tempGameState, depth+1);//and here it is passed to the maxValue function.
+				tempTuple = maxValue(tempGameState, depth+1, alpha, beta);//and here it is passed to the maxValue function.
 
 				//This if-statement is run if the utility we got from the maxValue call is lower than the current value
 				if(tempTuple.getNum() < value){
 					value=tempTuple.getNum();
-					minMove = move;
+
+					if (value > betaVal) {
+						betaVal = value;
+					}
 				}
-			}else{
+
+				if (value <= alpha) {
+					minMove = move;
+					return new Tuple(minMove, value);
+				}
+			} else {
 				//hopefully shouldn't run :'(
 				System.err.println("This is not allowed!");
 			}
