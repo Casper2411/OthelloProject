@@ -79,8 +79,7 @@ public class OthelloAI3 implements IOthelloAI{
 				}
 
 				if (value >= beta) {
-					maxMove = move;
-					return new Tuple(maxMove, value);
+					break;
 				}
 			} else {
 				//hopefully shouldn't run :'(
@@ -135,8 +134,7 @@ public class OthelloAI3 implements IOthelloAI{
 				}
 
 				if (value <= alpha) {
-					minMove = move;
-					return new Tuple(minMove, value);
+					break;
 				}
 
 			} else {
