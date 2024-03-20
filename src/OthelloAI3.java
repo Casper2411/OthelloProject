@@ -56,7 +56,6 @@ public class OthelloAI3 implements IOthelloAI{
 		//Check if no legal moves to do.
 		if(moves.isEmpty()){
 			GameState tempGameState = new GameState(board, player); //make a copy of the gamestate
-			// TODO: Why run minValue when it's not our turn anyways? Isn't it a bit of a resource waste?
 			return new Tuple(new Position(-4,-4), minValue(tempGameState, depth+1, alpha, beta).getNum()); //return a placeholder move, and make a new call to minValue
 		}
 
@@ -149,22 +148,22 @@ public class OthelloAI3 implements IOthelloAI{
 	}
 
 	/*
-	 * Denne funktion finder vores custom Utility
-	 * af en gamestate, og  returnerer den.
+	 * This function  returns our custom utility
+	 * of a gamestate and returns it.
 	 */
 	public float findUtility(GameState gs){
-		var gsValue = gs.countTokens();//returnerer et array hvor [0] er antallet af sorte brikker og [1] er antallet af hvide brikker
+		var gsValue = gs.countTokens();//returns an array where [0] is the amount of black tokens and [1] is the amount of white tokens.
 
-		//AIplayer-1 er vores AI's score, og AIplayer%2 er modstanderen
+		//AIplayer-1 is our AI's score, and AIplayer%2 is the opponents score.
 		int value=gsValue[AIplayer-1] - gsValue[AIplayer%2];
 
 
 		int[][] board = gs.getBoard();
 
 		/*
-		 * Her tilføjer vi en heuristic der prioriterer
-		 * brikker der ligger i siderne af brættet og
-		 * specielt hjørnebrikker også
+		 * Here we add an heuristic that prioriteses
+		 * tokens that is put on the edge of the board and 
+		 * especially also the corners.
 		 */
 		for (int i = 0; i < board[0].length; i++) {
 			if (board[0][i] == AIplayer){
@@ -183,7 +182,7 @@ public class OthelloAI3 implements IOthelloAI{
 			}
 		}
 
-		return value; //Returner den udregnede value.
+		return value; //RReturns the utility
 	}
 
 
