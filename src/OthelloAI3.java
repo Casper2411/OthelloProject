@@ -183,11 +183,6 @@ public class OthelloAI3 implements IOthelloAI{
 			}
 		}
 
-		//Testing
-		if(gsValue[AIplayer%2] == 0){
-			value+=100.0;
-		}
-
 		return value; //Returner den udregnede value.
 	}
 
