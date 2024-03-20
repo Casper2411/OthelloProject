@@ -10,7 +10,7 @@
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}",
-            "args": ["DumAI", "OthelloAI3", "4"],
+            "args": ["DumAI", "OthelloAI3", "8"],
             "cwd": "${workspaceFolder}/src"
         },
         {
@@ -19,7 +19,7 @@
             "request": "launch",
             "mainClass": "Othello",
             "projectName": "OthelloProjecct_4e5481b",
-            "args": ["DumAI", "OthelloAI3", "4"],
+            "args": ["DumAI", "OthelloAI3", "8"],
             "cwd": "${workspaceFolder}/src"
         }
     ]
