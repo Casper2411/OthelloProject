@@ -128,7 +128,7 @@ public class OthelloAI3 implements IOthelloAI{
 				if(tempTuple.getNum() < value){
 					value=tempTuple.getNum();
 
-					if (value > betaVal) {
+					if (value < betaVal) {
 						betaVal = value;
 					}
 				}
