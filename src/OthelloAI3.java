@@ -7,7 +7,7 @@ public class OthelloAI3 implements IOthelloAI{
 
 	GameState S1;
 	private int AIplayer;
-	private static final int max_depth = 9;
+	private static int max_depth = 15;
 	private static final float bonusOfEdgePlacement = (float) 0.20;
 
 	private float alphaVal = - (Float.MAX_VALUE);
@@ -44,6 +44,12 @@ public class OthelloAI3 implements IOthelloAI{
 		if (depth >= max_depth || gs.isFinished()) {
 			return new Tuple(new Position(-5,-5), findUtility(gs)); //return the current utility, and a placeholder move.
 		}
+
+		if (depth % 5 == 0 && depth > 9) {
+			max_depth--;
+			max_depth--;
+		}
+
 		float value = - Float.MAX_VALUE; //Notice the negative sign before  Float.MAX_VALUE (This is done because Float.MIN_VALUE is 0.0 for some reason?)
 		Position maxMove = new Position(-2, -2); //placeholder for the new position
 
