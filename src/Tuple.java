@@ -4,7 +4,10 @@
  * @version 8.3.2024
  */
 public class Tuple {
+
     static Position pos;
+
+    //num = utility
     static float num;
 
     public Tuple(Position pos, float num) {
@@ -21,6 +24,7 @@ public class Tuple {
         this.pos = pos;
     }
 
+    //Get utility
     public static float getNum() {
         return num;
     }
