@@ -12,6 +12,7 @@ public class OthelloAI3 implements IOthelloAI{
 
 	// Equivalent to the MINIMAX-SEARCH(State) function
 	public Position decideMove(GameState s){
+		System.out.println("AI is thinking!");
 		long start = System.currentTimeMillis(); //Start timing
 		if (s.legalMoves().size()==0) {
 			s.changePlayer();
