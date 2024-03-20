@@ -7,11 +7,11 @@ public class OthelloAI3 implements IOthelloAI{
 
 	GameState S1;
 	private int AIplayer;
-	private static final int max_depth = 6;
-	private static final float bonusOfEdgePlacement = (float) 0.25;
+	private static final int max_depth = 9;
+	private static final float bonusOfEdgePlacement = (float) 0.20;
 
 	private float alphaVal = - (Float.MAX_VALUE);
-	private float betaVal = - Float.MAX_VALUE;
+	private float betaVal = Float.MAX_VALUE;
 
 
 	// Equivalent to the MINIMAX-SEARCH(State) function
@@ -42,7 +42,7 @@ public class OthelloAI3 implements IOthelloAI{
 
 		//Check if the board has reached a dead end, or if this node is at max depth
 		if (depth >= max_depth || gs.isFinished()) {
-			return new Tuple(new Position(-1, -1), findUtility(gs)); //return the current utility, and a placeholder move.
+			return new Tuple(new Position(-5,-5), findUtility(gs)); //return the current utility, and a placeholder move.
 		}
 		float value = - Float.MAX_VALUE; //Notice the negative sign before  Float.MAX_VALUE (This is done because Float.MIN_VALUE is 0.0 for some reason?)
 		Position maxMove = new Position(-2, -2); //placeholder for the new position
@@ -57,7 +57,7 @@ public class OthelloAI3 implements IOthelloAI{
 		if(moves.isEmpty()){
 			GameState tempGameState = new GameState(board, player); //make a copy of the gamestate
 			// TODO: Why run minValue when it's not our turn anyways? Isn't it a bit of a resource waste?
-			return new Tuple(null, minValue(tempGameState, depth+1, alpha, beta).getNum()); //return a placeholder move, and make a new call to minValue
+			return new Tuple(new Position(-4,-4), minValue(tempGameState, depth+1, alpha, beta).getNum()); //return a placeholder move, and make a new call to minValue
 		}
 
 		Tuple tempTuple; //This is the tempTuple that will be used in the for loop
@@ -72,6 +72,7 @@ public class OthelloAI3 implements IOthelloAI{
 				//This if-statement is run if the utility we got from the minValue call is higher than the current value
 				if(tempTuple.getNum() > value){
 					value=tempTuple.getNum();
+					maxMove = move;
 				}
 
 				if (value > alpha) {
@@ -111,7 +112,7 @@ public class OthelloAI3 implements IOthelloAI{
 		if(moves.isEmpty()){
 			GameState tempGameState = new GameState(board, player);//make a copy of the gamestate
 
-			return new Tuple(null, maxValue(tempGameState, depth+1, alpha, beta).getNum()); //return a placeholder move, and make a new call to maxValue
+			return new Tuple(new Position(-6, -6), maxValue(tempGameState, depth+1, alpha, beta).getNum()); //return a placeholder move, and make a new call to maxValue
 		}
 
 		Tuple tempTuple;//This is the tempTuple that will be used in the for loop
@@ -126,7 +127,7 @@ public class OthelloAI3 implements IOthelloAI{
 				//This if-statement is run if the utility we got from the maxValue call is lower than the current value
 				if(tempTuple.getNum() < value){
 					value=tempTuple.getNum();
-
+					minMove = move;
 				}
 
 				if (value < beta) {
@@ -180,6 +181,11 @@ public class OthelloAI3 implements IOthelloAI{
 			if (board[j][board[j].length-1] == AIplayer){
 				value += bonusOfEdgePlacement;
 			}
+		}
+
+		//Testing
+		if(gsValue[AIplayer%2] == 0){
+			value+=100.0;
 		}
 
 		return value; //Returner den udregnede value.
