@@ -10,15 +10,15 @@ public class OthelloAI3 implements IOthelloAI{
 	private static int max_depth = 15;
 	private static final float bonusOfEdgePlacement = (float) 0.20;
 
-	private float alphaVal = - (Float.MAX_VALUE);
-	private float betaVal = Float.MAX_VALUE;
+	private final float initialAlpha = - (Float.MAX_VALUE);
+	private final float initialBeta = Float.MAX_VALUE;
 
 
 	// Equivalent to the MINIMAX-SEARCH(State) function
 	public Position decideMove(GameState s){
 		System.out.println("AI is thinking!");
 		long start = System.currentTimeMillis(); //Start timing
-		if (s.legalMoves().size()==0) {
+		if (s.legalMoves().isEmpty()) {
 			s.changePlayer();
 			return null;
 		}
@@ -30,7 +30,7 @@ public class OthelloAI3 implements IOthelloAI{
 		GameState tempGameState = new GameState(board, player);
 
 		//Make the initial call to maxValue
-		Tuple t = maxValue(tempGameState, 0, alphaVal, betaVal);
+		Tuple t = maxValue(tempGameState, 0, initialAlpha, initialBeta);
 
 		long end = System.currentTimeMillis(); //end timing
 		System.out.println("Time taken by decideMove: " + (end - start) + " ms");
