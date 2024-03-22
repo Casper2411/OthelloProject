@@ -7,15 +7,20 @@ public class OthelloAI3 implements IOthelloAI{
 
 	GameState S1;
 	private int AIplayer;
-	private static int max_depth = 15;
+	private static final int max_depth = 15;
 	private static final float bonusOfEdgePlacement = (float) 0.20;
 
 	private final float initialAlpha = - (Float.MAX_VALUE);
 	private final float initialBeta = Float.MAX_VALUE;
 
+	private int softMaxDepth;
+
 
 	// Equivalent to the MINIMAX-SEARCH(State) function
 	public Position decideMove(GameState s){
+
+		softMaxDepth = max_depth;
+
 		System.out.println("AI is thinking!");
 		long start = System.currentTimeMillis(); //Start timing
 		if (s.legalMoves().isEmpty()) {
@@ -30,7 +35,7 @@ public class OthelloAI3 implements IOthelloAI{
 		GameState tempGameState = new GameState(board, player);
 
 		//Make the initial call to maxValue
-		Tuple t = maxValue(tempGameState, 0, initialAlpha, initialBeta);
+		Tuple t = maxValue(tempGameState, 0, initialAlpha, initialBeta, softMaxDepth);
 
 		long end = System.currentTimeMillis(); //end timing
 		System.out.println("Time taken by decideMove: " + (end - start) + " ms");
@@ -38,16 +43,15 @@ public class OthelloAI3 implements IOthelloAI{
 		return t.getPos(); //Return the move with the highest utility
 	}
 
-	public Tuple maxValue(GameState gs, int depth, float alpha, float beta) {
+	public Tuple maxValue(GameState gs, int depth, float alpha, float beta, int passedSoftDepth) {
 
 		//Check if the board has reached a dead end, or if this node is at max depth
-		if (depth >= max_depth || gs.isFinished()) {
+		if (depth >= passedSoftDepth || gs.isFinished()) {
 			return new Tuple(new Position(-5,-5), findUtility(gs)); //return the current utility, and a placeholder move.
 		}
 
 		if (depth % 5 == 0 && depth > 9) {
-			max_depth--;
-			max_depth--;
+			softMaxDepth = (max_depth - depth) % 2;
 		}
 
 		float value = - Float.MAX_VALUE; //Notice the negative sign before  Float.MAX_VALUE (This is done because Float.MIN_VALUE is 0.0 for some reason?)
@@ -62,7 +66,7 @@ public class OthelloAI3 implements IOthelloAI{
 		//Check if no legal moves to do.
 		if(moves.isEmpty()){
 			GameState tempGameState = new GameState(board, player); //make a copy of the gamestate
-			return new Tuple(new Position(-4,-4), minValue(tempGameState, depth+1, alpha, beta).getNum()); //return a placeholder move, and make a new call to minValue
+			return new Tuple(new Position(-4,-4), minValue(tempGameState, depth+1, alpha, beta, softMaxDepth).getNum()); //return a placeholder move, and make a new call to minValue
 		}
 
 		Tuple tempTuple; //This is the tempTuple that will be used in the for loop
@@ -72,7 +76,7 @@ public class OthelloAI3 implements IOthelloAI{
 			//The if statement here checks if the token can be inserted(Which it should be, since we have the move from gs.legalMoves)
 			if (tempGameState.insertToken(move)) { //Here the token is inserted
 
-				tempTuple = minValue(tempGameState, depth+1, alpha, beta);//and here it is passed to the minValue function.
+				tempTuple = minValue(tempGameState, depth+1, alpha, beta, softMaxDepth);//and here it is passed to the minValue function.
 
 				//This if-statement is run if the utility we got from the minValue call is higher than the current value
 				if(tempTuple.getNum() > value){
@@ -97,10 +101,10 @@ public class OthelloAI3 implements IOthelloAI{
 		return new Tuple(maxMove, value);
 	}
 
-	public Tuple minValue(GameState gs, int depth, float alpha, float beta) {
+	public Tuple minValue(GameState gs, int depth, float alpha, float beta, int passedSoftDepth) {
 
 		//Check if the board has reached a dead end, or if this node is at max depth
-		if (depth >= max_depth || gs.isFinished()) {
+		if (depth >= passedSoftDepth || gs.isFinished()) {
 			return new Tuple(new Position(-1, -1), findUtility(gs));
 		}
 
@@ -117,7 +121,7 @@ public class OthelloAI3 implements IOthelloAI{
 		if(moves.isEmpty()){
 			GameState tempGameState = new GameState(board, player);//make a copy of the gamestate
 
-			return new Tuple(new Position(-6, -6), maxValue(tempGameState, depth+1, alpha, beta).getNum()); //return a placeholder move, and make a new call to maxValue
+			return new Tuple(new Position(-6, -6), maxValue(tempGameState, depth+1, alpha, beta, softMaxDepth).getNum()); //return a placeholder move, and make a new call to maxValue
 		}
 
 		Tuple tempTuple;//This is the tempTuple that will be used in the for loop
@@ -127,7 +131,7 @@ public class OthelloAI3 implements IOthelloAI{
 			//The if statement here checks if the token can be inserted(Which it should be, since we have the move from gs.legalMoves)
 			if (tempGameState.insertToken(move)) { //Here the token is inserted
 
-				tempTuple = maxValue(tempGameState, depth+1, alpha, beta);//and here it is passed to the maxValue function.
+				tempTuple = maxValue(tempGameState, depth+1, alpha, beta, softMaxDepth);//and here it is passed to the maxValue function.
 
 				//This if-statement is run if the utility we got from the maxValue call is lower than the current value
 				if(tempTuple.getNum() < value){
