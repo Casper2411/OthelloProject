@@ -13,7 +13,6 @@ public class OthelloAI3 implements IOthelloAI{
 	private final float initialAlpha = - (Float.MAX_VALUE);
 	private final float initialBeta = Float.MAX_VALUE;
 
-
 	// Equivalent to the MINIMAX-SEARCH(State) function
 	public Position decideMove(GameState s){
 
@@ -86,8 +85,9 @@ public class OthelloAI3 implements IOthelloAI{
 				}
 
 				if (value >= beta) {
-					break;
+					return new Tuple(maxMove, value);
 				}
+
 			} else {
 				//hopefully shouldn't run :'(
 				System.err.println("This is not allowed!");
@@ -141,7 +141,7 @@ public class OthelloAI3 implements IOthelloAI{
 				}
 
 				if (value <= alpha) {
-					break;
+					return new Tuple(minMove, value);
 				}
 
 			} else {
@@ -190,6 +190,4 @@ public class OthelloAI3 implements IOthelloAI{
 
 		return value; //RReturns the utility
 	}
-
-
 }
